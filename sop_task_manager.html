@@ -383,6 +383,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       </select>
     </div>
   </div>
+  <!-- Global filter bar -->
+  <div style="display:flex;justify-content:flex-end;padding:0 0 1rem 0">
+    <button onclick="toggleHideDone()" id="hide-done-btn" class="btn btn-sm" style="font-size:12px;white-space:nowrap"></button>
+  </div>
 
   <!-- Block 1: Ad-hoc tasks -->
   <div class="block">
@@ -404,10 +408,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       </div>
     </div>
     <div class="block-body">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
-        <div class="stats-row" id="a-stats" style="margin-bottom:0;flex:1"></div>
-        <button onclick="toggleHideDone()" id="hide-done-btn" class="btn btn-sm" style="font-size:12px;white-space:nowrap"></button>
-      </div>
+      <div class="stats-row" id="a-stats"></div>
       <div id="block2-content"></div>
     </div>
   </div>
@@ -750,6 +751,7 @@ function renderAll() {
   });
   renderLegend(); renderCycleStats(); renderBlock1();
   renderAdhocStats(); renderCatFilters(); renderBlock2();
+  updateHideDoneBtn();
 }
 function onBUChange() { globalBU = document.getElementById('global-bu').value; renderAll(); }
 function onUserChange() { globalUser = document.getElementById('global-user').value; renderAll(); }
@@ -859,7 +861,7 @@ function renderBoard() {
   board.style.gridTemplateColumns = `repeat(${buList.length},minmax(0,1fr))`;
   board.innerHTML = buList.map(bu => {
     const k = bk(bu);
-    const buT = ft.filter(t=>t.bu===bu);
+    const buT = ft.filter(t=>t.bu===bu&&(!hideDone||t.status!=='done'));
     const phaseIdx = PHASES.indexOf(activePhase);
     const locked = isBULockedForPhase(bu, phaseIdx, boardYear, boardMonth);
     const prevPhase = phaseIdx > 0 ? PHASES[phaseIdx-1] : null;
@@ -1053,8 +1055,7 @@ function renderAdhocCards(){
   });
   const totalDone=ft.filter(t=>statusOf(t)==='done').length;
   // Update the header button
-  const btn=document.getElementById('hide-done-btn');
-  if(btn) btn.textContent=hideDone?`👁 Show completed (${totalDone})`:'🙈 Hide completed';
+  updateHideDoneBtn();
 
   let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">';
 
@@ -1106,7 +1107,13 @@ function renderAdhocCards(){
   el.innerHTML = html;
 }
 
-function toggleHideDone(){ hideDone=!hideDone; renderAdhocCards(); }
+function toggleHideDone(){ hideDone=!hideDone; renderBlock2(); renderBoard(); updateHideDoneBtn(); }
+function updateHideDoneBtn(){
+  const btn=document.getElementById('hide-done-btn');
+  if(!btn) return;
+  const totalDone=[...cycleTasks,...adhocTasks].filter(t=>(globalBU==='all'||t.bu===globalBU)&&statusOf(t)==='done').length;
+  btn.textContent=hideDone?`👁 Show completed (${totalDone})`:'🙈 Hide completed';
+}
 
 function adhocCardRow(t,k){
   const s=statusOf(t);
