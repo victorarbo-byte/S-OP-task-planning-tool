@@ -1109,9 +1109,18 @@ function adhocCardRow(t,k){
   const subDone=(t.subtasks||[]).filter(x=>x.done).length;
   const subTotal=(t.subtasks||[]).length;
   const commentCount=(t.comments||[]).length;
-  return `<div style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:6px;border-left:3px solid ${BU_COLOR[k]};cursor:pointer" onclick="switchToListAndExpand('${t.id}')">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:5px">
-      <span style="font-size:12px;font-weight:500;color:${s==='done'?'var(--text-3)':'var(--text)'};text-decoration:${s==='done'?'line-through':'none'};line-height:1.4">${t.title}</span>
+  const isDone=t.status==='done';
+  // If no subtasks: show checkbox for one-click complete; else open detail modal
+  const cardClick = subTotal===0
+    ? `event.stopPropagation();toggleADone('${t.id}')`
+    : `switchToListAndExpand('${t.id}')`;
+  const checkBox = subTotal===0
+    ? `<div class="t-checkbox${isDone?' done':''}" onclick="event.stopPropagation();toggleADone('${t.id}')" style="flex-shrink:0;margin-top:1px;width:16px;height:16px">${isDone?'✓':''}</div>`
+    : '';
+  return `<div style="background:var(--bg);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:6px;border-left:3px solid ${BU_COLOR[k]};cursor:pointer" onclick="${cardClick}">
+    <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:5px">
+      ${checkBox}
+      <span style="font-size:12px;font-weight:500;color:${isDone?'var(--text-3)':'var(--text)'};text-decoration:${isDone?'line-through':'none'};line-height:1.4;flex:1">${t.title}</span>
       <span class="prio prio-${t.prio||'low'}" style="flex-shrink:0;margin-top:3px"></span>
     </div>
     <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
