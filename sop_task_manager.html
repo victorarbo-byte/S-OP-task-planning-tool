@@ -1019,7 +1019,10 @@ function renderAdhocStats() {
     `<div class="stat"><div class="stat-val" style="color:var(--danger)">${all.filter(t=>statusOf(t)==='overdue').length}</div><div class="stat-label">Overdue</div></div>`;
 }
 function renderCatFilters() {
-  document.getElementById('cat-filters').innerHTML = CATS.map(c =>
+  // Build list from actual tasks in adhocTasks
+  const usedKeys = [...new Set(adhocTasks.map(t=>t.category).filter(Boolean))];
+  const available = CATS.filter(c => c.k==='all' || usedKeys.includes(c.k));
+  document.getElementById('cat-filters').innerHTML = available.map(c =>
     `<span class="cat-pill${activeCat===c.k?' active':''}" onclick="setCat('${c.k}')">${c.l}</span>`
   ).join('');
 }
