@@ -404,7 +404,10 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       </div>
     </div>
     <div class="block-body">
-      <div class="stats-row" id="a-stats"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+        <div class="stats-row" id="a-stats" style="margin-bottom:0;flex:1"></div>
+        <button onclick="toggleHideDone()" id="hide-done-btn" class="btn btn-sm" style="font-size:12px;white-space:nowrap"></button>
+      </div>
       <div id="block2-content"></div>
     </div>
   </div>
@@ -1049,12 +1052,11 @@ function renderAdhocCards(){
     return true;
   });
   const totalDone=ft.filter(t=>statusOf(t)==='done').length;
-  const btnLabel = hideDone ? ('👁 Show completed ('+totalDone+')') : '🙈 Hide completed';
+  // Update the header button
+  const btn=document.getElementById('hide-done-btn');
+  if(btn) btn.textContent=hideDone?`👁 Show completed (${totalDone})`:'🙈 Hide completed';
 
-  let html = '<div style="display:flex;justify-content:flex-end;margin-bottom:10px">'
-    + '<button onclick="toggleHideDone()" class="btn btn-sm">'+btnLabel+'</button>'
-    + '</div>'
-    + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">';
+  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">';
 
   buList.forEach(bu=>{
     const k=bk(bu);
