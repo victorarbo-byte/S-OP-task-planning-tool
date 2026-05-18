@@ -1053,7 +1053,7 @@ function renderAdhocCards(){
   // Update the header button
   updateHideDoneBtn();
 
-  let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;align-items:start">';
+  let html = '<div style="columns:280px;column-gap:14px">';
 
   buList.forEach(bu=>{
     const k=bk(bu);
@@ -1069,7 +1069,7 @@ function renderAdhocCards(){
     const showEmpty = buTasks.length===0; // always show empty columns
     const countBadge = visibleCount + (hideDone&&done.length ? ' +'+done.length+'✓' : '');
 
-    html += '<div style="background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border)">';
+    html += '<div style="background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);break-inside:avoid;margin-bottom:14px">';
     html += '<div style="background:'+BU_COLOR[k]+';padding:10px 14px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;display:flex;align-items:center;justify-content:space-between">'
       + '<span style="font-size:13px;font-weight:600;color:#fff">'+bu+'</span>'
       + '<div style="display:flex;align-items:center;gap:8px">'
