@@ -367,6 +367,7 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       </div>
     </div>
     <div class="app-controls">
+      <button onclick="toggleHideDone()" id="hide-done-btn" class="btn btn-sm" style="font-size:12px;white-space:nowrap"></button>
       <div class="sync-badge"><div class="sync-dot" id="sync-dot"></div><span id="sync-label">Live</span></div>
       <select class="bu-select" id="global-bu" onchange="onBUChange()">
         <option value="all">All BUs</option>
@@ -383,11 +384,6 @@ Resources:`;for(let t of c){if(!t||typeof t!=`string`)throw Error(`@supabase/aut
       </select>
     </div>
   </div>
-  <!-- Global filter bar -->
-  <div style="display:flex;justify-content:flex-end;padding:0 0 1rem 0">
-    <button onclick="toggleHideDone()" id="hide-done-btn" class="btn btn-sm" style="font-size:12px;white-space:nowrap"></button>
-  </div>
-
   <!-- Block 1: Ad-hoc tasks -->
   <div class="block">
     <div class="block-head">
