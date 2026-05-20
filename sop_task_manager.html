@@ -848,8 +848,9 @@ function renderBoard() {
     if (globalBU !== 'all' && t.bu !== globalBU) return false;
     if (globalUser !== 'all' && t.assignee !== globalUser) return false;
     if (t.due) {
-      const d = new Date(t.due);
-      return d.getFullYear() === boardYear && d.getMonth() === boardMonth;
+      const parts = t.due.split('-');
+      const y = parseInt(parts[0]), m = parseInt(parts[1])-1;
+      return y === boardYear && m === boardMonth;
     }
     return true;
   });
@@ -861,8 +862,8 @@ function renderBoard() {
     const phaseIdx = PHASES.indexOf(activePhase);
     const locked = isBULockedForPhase(bu, phaseIdx, boardYear, boardMonth);
     const prevPhase = phaseIdx > 0 ? PHASES[phaseIdx-1] : null;
-    const prevDone = prevPhase ? cycleTasks.filter(t=>t.bu===bu&&t.phase===prevPhase&&t.due&&new Date(t.due).getFullYear()===boardYear&&new Date(t.due).getMonth()===boardMonth).filter(t=>t.status==='done').length : 0;
-    const prevTotal = prevPhase ? cycleTasks.filter(t=>t.bu===bu&&t.phase===prevPhase&&t.due&&new Date(t.due).getFullYear()===boardYear&&new Date(t.due).getMonth()===boardMonth).length : 0;
+    const prevDone = prevPhase ? cycleTasks.filter(t=>t.bu===bu&&t.phase===prevPhase&&t.due&&(t.due.split('-')[0]==boardYear&&parseInt(t.due.split('-')[1])-1===boardMonth)).filter(t=>t.status==='done').length : 0;
+    const prevTotal = prevPhase ? cycleTasks.filter(t=>t.bu===bu&&t.phase===prevPhase&&t.due&&(t.due.split('-')[0]==boardYear&&parseInt(t.due.split('-')[1])-1===boardMonth)).length : 0;
     const cards = buT.map(t => {
       const s = statusOf(t);
       const spCls = s==='done'?'sp-done':s==='overdue'?'sp-overdue':s==='inprog'?'sp-inprog':'sp-todo';
