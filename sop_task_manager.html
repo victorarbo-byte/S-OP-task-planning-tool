@@ -760,6 +760,12 @@ function renderLegend(){
 function renderCycleStats() {
   let all = globalBU==='all' ? cycleTasks : cycleTasks.filter(t=>t.bu===globalBU);
   if(globalUser!=='all') all = all.filter(t=>t.assignee===globalUser);
+  // Filter by current board month — same logic as renderBoard
+  all = all.filter(t=>{
+    if(!t.due) return true;
+    const parts = t.due.split('-');
+    return parseInt(parts[0])===boardYear && parseInt(parts[1])-1===boardMonth;
+  });
   document.getElementById('c-stats').innerHTML =
     `<div class="stat"><div class="stat-val">${all.length}</div><div class="stat-label">Total tasks</div></div>` +
     `<div class="stat"><div class="stat-val">${all.filter(t=>t.status==='inprog').length}</div><div class="stat-label">In progress</div></div>` +
@@ -794,9 +800,9 @@ function renderBlock1() {
   }
 }
 
-function boardPrev(){if(boardMonth===0){boardMonth=11;boardYear--;}else boardMonth--;renderBlock1();}
-function boardNext(){if(boardMonth===11){boardMonth=0;boardYear++;}else boardMonth++;renderBlock1();}
-function boardToday(){boardYear=TODAY.getFullYear();boardMonth=TODAY.getMonth();renderBlock1();}
+function boardPrev(){if(boardMonth===0){boardMonth=11;boardYear--;}else boardMonth--;renderCycleStats();renderBlock1();}
+function boardNext(){if(boardMonth===11){boardMonth=0;boardYear++;}else boardMonth++;renderCycleStats();renderBlock1();}
+function boardToday(){boardYear=TODAY.getFullYear();boardMonth=TODAY.getMonth();renderCycleStats();renderBlock1();}
 
 // ── Phase locking ──────────────────────────────────────────────────────────
 // Returns the index of the furthest phase a BU is allowed to work in.
